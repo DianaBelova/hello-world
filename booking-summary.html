@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booking Summary – BookRetreats.com</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f7f7f7;
+      color: #333;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    a { color: #0066cc; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Header ── */
+    header {
+      background: #fff;
+      border-bottom: 1px solid #e5e5e5;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    /* Logo */
+    .logo { display: flex; flex-direction: column; line-height: 1.1; flex-shrink: 0; }
+    .logo-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0066cc;
+      letter-spacing: -0.3px;
+    }
+    .logo-tagline { font-size: 10px; color: #888; font-weight: 400; }
+
+    /* Nav */
+    nav { display: flex; gap: 4px; }
+    nav a {
+      padding: 8px 14px;
+      border-radius: 6px;
+      color: #444;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    nav a:hover { background: #f0f4ff; color: #0066cc; text-decoration: none; }
+    nav a.active { color: #0066cc; background: #eef3ff; }
+
+    /* User menu */
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .user-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      transition: box-shadow 0.15s, border-color 0.15s;
+    }
+    .user-btn:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.12); border-color: #bbb; }
+    .avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #0066cc;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .hamburger { font-size: 18px; color: #555; }
+
+    /* ── Page layout ── */
+    .page-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* ── Main column ── */
+    .main-col h1 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #1a1a1a;
+    }
+    .main-col h2 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    /* Info cards row */
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .info-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      padding: 16px 18px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      transition: box-shadow 0.15s;
+    }
+    .info-card:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.09); }
+
+    .info-card-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #888;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .info-card-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    .info-card-sub {
+      font-size: 12px;
+      color: #777;
+      margin-top: 2px;
+    }
+
+    /* Arrival card with arrow indicator */
+    .arrival-arrow {
+      display: inline-block;
+      margin-left: 4px;
+      color: #0066cc;
+      font-size: 16px;
+    }
+
+    /* Booking details card */
+    .details-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    .details-card-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .details-list { padding: 8px 0; }
+
+    .details-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 22px;
+      border-bottom: 1px solid #f5f5f5;
+      transition: background 0.12s;
+    }
+    .details-row:last-child { border-bottom: none; }
+    .details-row:hover { background: #fafafa; }
+
+    .details-icon {
+      font-size: 16px;
+      width: 22px;
+      text-align: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .details-content { flex: 1; }
+    .details-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .details-value { font-size: 14px; color: #222; font-weight: 500; }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .status-badge::before { content: "✓"; font-size: 11px; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      position: sticky;
+      top: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sidebar-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 15px 18px;
+      border: none;
+      background: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      border-bottom: 1px solid #f0f0f0;
+      transition: background 0.15s, color 0.15s;
+      text-align: left;
+    }
+    .action-btn:last-child { border-bottom: none; }
+    .action-btn:hover { background: #f5f8ff; color: #0066cc; }
+    .action-btn.danger:hover { background: #fff5f5; color: #d32f2f; }
+
+    .action-btn-icon {
+      font-size: 18px;
+      width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .action-btn-text { flex: 1; }
+    .action-btn-arrow { color: #bbb; font-size: 12px; }
+    .action-btn:hover .action-btn-arrow { color: inherit; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .page-wrap { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .info-cards { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      nav { display: none; }
+      .header-inner { justify-content: space-between; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="header-inner">
+      <a href="#" class="logo" style="text-decoration:none;">
+        <span class="logo-name">BookRetreats.com</span>
+        <span class="logo-tagline">World's #1 Retreat Site</span>
+      </a>
+
+      <nav>
+        <a href="messaging.html">Inbox</a>
+        <a href="#" class="active">Bookings</a>
+        <a href="#">My Retreats</a>
+        <a href="#">My Vouchers</a>
+      </nav>
+
+      <div class="user-menu">
+        <button class="user-btn">
+          <div class="avatar">D</div>
+          Diana
+          <span class="hamburger">☰</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Main content ── -->
+  <div class="page-wrap">
+
+    <!-- Left column -->
+    <main class="main-col">
+      <h1>Booking summary</h1>
+      <h2>11 Day Retreat Bi Ayr</h2>
+
+      <!-- Info cards -->
+      <div class="info-cards">
+        <div class="info-card">
+          <div class="info-card-label">📍 Address</div>
+          <div class="info-card-value">San Gimignano</div>
+          <div class="info-card-sub">Tuscany, Italy</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">📅 Arrival</div>
+          <div class="info-card-value">Feb 26th, 2026 <span class="arrival-arrow">→</span></div>
+          <div class="info-card-sub">Check-in day</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">📅 Departure</div>
+          <div class="info-card-value">Mar 8th, 2026</div>
+          <div class="info-card-sub">Check-out day</div>
+        </div>
+      </div>
+
+      <!-- Booking details -->
+      <div class="details-card">
+        <div class="details-card-header">Booking details</div>
+        <div class="details-list">
+
+          <div class="details-row">
+            <div class="details-icon">👤</div>
+            <div class="details-content">
+              <div class="details-label">Guest</div>
+              <div class="details-value">Test test</div>
+            </div>
+          </div>
+
+          <div class="details-row">
+            <div class="details-icon">✅</div>
+            <div class="details-content">
+              <div class="details-label">Status</div>
+              <div class="details-value">
+                <span class="status-badge">Booked</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="details-row">
+            <div class="details-icon">🏠</div>
+            <div class="details-content">
+              <div class="details-label">Accommodation</div>
+              <div class="details-value">Private Person 2533344</div>
+            </div>
+          </div>
+
+          <div class="details-row">
+            <div class="details-icon">🎒</div>
+            <div class="details-content">
+              <div class="details-label">Addons</div>
+              <div class="details-value">1x Airport transfer from Glasgow Airport (both ways) &mdash; US$&nbsp;0</div>
+            </div>
+          </div>
+
+          <div class="details-row">
+            <div class="details-icon">💰</div>
+            <div class="details-content">
+              <div class="details-label">Amount Paid</div>
+              <div class="details-value">US$ 200</div>
+            </div>
+          </div>
+
+          <div class="details-row">
+            <div class="details-icon">💳</div>
+            <div class="details-content">
+              <div class="details-label">Remaining Balance</div>
+              <div class="details-value" style="color:#c0392b; font-weight:600;">€ 675 <span style="color:#777;font-weight:400;font-size:13px;">(US$ 800)</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-card">
+
+        <button class="action-btn" onclick="window.location.href='messaging.html'">
+          <span class="action-btn-icon">📧</span>
+          <span class="action-btn-text">Message Host</span>
+          <span class="action-btn-arrow">›</span>
+        </button>
+
+        <button class="action-btn">
+          <span class="action-btn-icon">🧾</span>
+          <span class="action-btn-text">Receipt</span>
+          <span class="action-btn-arrow">›</span>
+        </button>
+
+        <button class="action-btn">
+          <span class="action-btn-icon">📅</span>
+          <span class="action-btn-text">Change Arrival Date</span>
+          <span class="action-btn-arrow">›</span>
+        </button>
+
+        <button class="action-btn danger">
+          <span class="action-btn-icon">❌</span>
+          <span class="action-btn-text">Cancel</span>
+          <span class="action-btn-arrow">›</span>
+        </button>
+
+      </div>
+    </aside>
+
+  </div>
+
+</body>
+</html>
